@@ -57,6 +57,41 @@ class UI {
         }, 5000);
     }
 
+    mostrarCita({citas}){
+
+        this.limpiarHtml();
+
+        citas.forEach( cita => {
+
+            const { paciente , servicio, telefono, fecha, hora, observaciones, id} = cita;
+
+            const divCita = document.createElement('div');
+            divCita.classList.add('card');
+            divCita.dataset.id = id;
+            divCita.innerHTML = `
+            <div class="card-body col-sm-12 col-md-12">
+                <h5 class="card-title fs-2">${paciente}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">${servicio}</h6>
+                <p><span class"font-weight-bolder">Telefono:</span> ${telefono}</p> 
+                <p><span class"font-weight-bolder">Fecha:</span> ${fecha}</p> 
+                <p><span class"font-weight-bolder">Hora:</span> ${hora}</p> 
+                <p><span class"font-weight-bolder">Observaciones:</span> ${observaciones}</p> 
+            
+                
+                </div>
+            `;
+
+
+            contenedorCitas.appendChild(divCita);
+        });
+    }
+
+    limpiarHtml(){
+        while (contenedorCitas.firstChild) {
+            contenedorCitas.removeChild(contenedorCitas.firstChild)
+        }
+    }
+
 }
 
 
@@ -97,7 +132,7 @@ const citaObj = {
     fecha: '',
     hora: '',
     observaciones: ''
-}
+};
 
 
 
@@ -121,6 +156,44 @@ function nuevaCita(e){
         ui.imprimirAlerta('Todos los campos son obligatorios', 'error');
         return;
     }
+
+    //Generamos un id unico
+    citaObj.id = Date.now();
+
+    // Creamos la nueva cita
+    adminCitas.agregarCita({...citaObj});
+
+    // Mensaje de agregado correctamente
+    ui.imprimirAlerta('Se agrego la cita correctamente');
+
+    // Reiniciamos el formulario y el objeto
+    reiniciarObj();
+    formulario.reset();
+
+    //Mostramos la cita en el DOM
+    ui.mostrarCita(adminCitas);
+}
+
+function reiniciarObj(){
+    citaObj.paciente = '';
+    citaObj.servicio = '';
+    citaObj.telefono = '';
+    citaObj.fecha = '';
+    citaObj.hora = '';
+    citaObj.observaciones = '';
+}
+
+function eliminarCita(id){
+
+    //Eliminar cita
+    adminCitas.eliminarCita(id);
+
+    //Muestre el mensaje de eliminado
+    ui.imprimirAlerta('La cita se elimino correctamente :)');
+
+    // Refresque las citas del DOM
+    ui.mostrarCita(adminCitas);
+
 }
 
 
