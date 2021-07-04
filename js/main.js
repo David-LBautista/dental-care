@@ -11,6 +11,8 @@ const observacionesInput = document.querySelector('#observaciones');
 const formulario = document.querySelector('#nueva-cita');
 const contenedorCitas = document.querySelector('#citas');
 
+const editCita = document.querySelector('#citass')
+
 
 // MODO EDICION
 let editando;
@@ -88,7 +90,7 @@ class UI {
             const servicioParrafo = document.createElement('p', 'fs-6');
             servicioParrafo.style.color = "red";
             servicioParrafo.innerHTML = `
-                <span class="fw-bolder">${servicio}</span> 
+                <span class="fw-bolder">${servicio}</span>
             `;
 
             const telefonoParrafo = document.createElement('p', 'fs-6');
@@ -109,7 +111,7 @@ class UI {
             observacionesParrafo.innerHTML = `
                 <span class="fw-bolder">Observaciones:</span> ${observaciones}
             `;
-            
+
 
 
 
@@ -125,7 +127,7 @@ class UI {
             <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />
             </svg>`;
 
-            btnEditar.onclick = () => editarCita(cita);
+            // btnEditar.onclick = () => editarCita(cita);
 
             btnEliminar.classList.add('btn', 'btn-outline-danger');
             btnEliminar.innerHTML = `Eliminar <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -133,17 +135,21 @@ class UI {
             </svg>`;
             btnEliminar.onclick = () => eliminarCita(id);
 
+
             botonesDiv.appendChild(btnEditar);
             botonesDiv.appendChild(btnEliminar);
-
             divCita.appendChild(pacienteParrafo);
             divCita.appendChild(servicioParrafo);
             divCita.appendChild(telefonoParrafo);
             divCita.appendChild(fechaParrafo);
             divCita.appendChild(horaParrafo);
             divCita.appendChild(observacionesParrafo);
-            
             divCita.appendChild(botonesDiv);
+
+            btnEditar.onclick = () =>{
+                editarCita(cita);
+                editCita.appendChild(divCita);
+            }
 
 
             contenedorCitas.appendChild(divCita);
@@ -153,6 +159,12 @@ class UI {
     limpiarHtml(){
         while (contenedorCitas.firstChild) {
             contenedorCitas.removeChild(contenedorCitas.firstChild)
+        }
+    }
+
+    clearHtml(){
+        while (editCita.firstChild) {
+            editCita.removeChild(editCita.firstChild)
         }
     }
 
@@ -206,7 +218,7 @@ const citaObj = {
 function datosCita(e){
     citaObj[e.target.name] = e.target.value;
 
-    console.log(citaObj);
+
 }
 
 
@@ -227,11 +239,15 @@ function nuevaCita(e){
         //pasar el objeto de la cita a edicion
         adminCitas.edicionCita({...citaObj});
 
+
         //regresar el texto del boton a su estado original
         formulario.querySelector('button[type="submit"]').textContent = 'Crear Cita';
 
         //quitando modo edicion
         editando = false;
+
+        // limpiamos el html del div
+        ui.clearHtml();
 
     }else{
 
@@ -297,7 +313,8 @@ function editarCita(cita){
     citaObj.id = id;
 
 
-    
+    ui.clearHtml(adminCitas);
+
     //Cambiamos el texto del boton de guardar
     formulario.querySelector('button[type="submit"]').textContent = 'Guardar Cambios';
 
