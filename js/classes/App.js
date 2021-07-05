@@ -1,4 +1,4 @@
-import { datosCita, nuevaCita} from '../funciones.js';
+import { datosCita, nuevaCita, crearDB } from '../funciones.js';
 
 import { pacienteInput,
         servicioInput,
@@ -12,6 +12,7 @@ import { pacienteInput,
 class App {
     constructor(){
         this.initApp();
+        crearDB();
     }
 
     initApp(){

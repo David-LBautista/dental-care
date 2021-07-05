@@ -1,6 +1,5 @@
-import { eliminarCita, editarCita} from '../funciones.js';
+import { eliminarCita, editarCita, DB } from '../funciones.js';
 import { contenedorCitas, editCita } from '../selectores.js';
-
 
 
 class UI {
@@ -27,13 +26,17 @@ class UI {
         }, 5000);
     }
 
-    mostrarCita({citas}){
+    mostrarCita(){
 
         this.limpiarHtml();
 
-        citas.forEach( cita => {
+        //Leemos el contenido de indexDB
+        const objectStore = DB.transaction('citas').objectStore('citas');
 
-            const { paciente , servicio, telefono, fecha, hora, observaciones, id} = cita;
+        objectStore.openCursor().onsuccess = function(e) {
+            const cursor = e.target.result;
+            if (cursor) {
+                const { paciente , servicio, telefono, fecha, hora, observaciones, id} = cursor.value;
 
             const divCita = document.createElement('div');
             divCita.classList.add('card', 'p-3');
@@ -101,7 +104,8 @@ class UI {
             divCita.appendChild(horaParrafo);
             divCita.appendChild(observacionesParrafo);
             divCita.appendChild(botonesDiv);
-
+                
+            const cita = cursor.value;
             btnEditar.onclick = () =>{
                 editarCita(cita);
                 editCita.appendChild(divCita);
@@ -109,7 +113,11 @@ class UI {
 
 
             contenedorCitas.appendChild(divCita);
-        });
+
+            //Vaya al siguiente elemento
+            cursor.continue();
+            }
+        }
     }
 
     limpiarHtml(){

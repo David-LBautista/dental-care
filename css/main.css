@@ -124,6 +124,12 @@ textarea {
   padding: 0 0 50px 0;
   background-color: #F5F0F6;
 }
+.card{
+  cursor: pointer;
+}
+.card:hover{
+  transform: scale();
+}
 .servicios_title{
   margin: 0;
   width: 100%;
